@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Reflection;
 using System.Text;
+using XPY.WebTemplate2.Infrastructure.Extensions.NSwag;
 
 namespace XPY.WebTemplate2.Infrastructure.Extensions
 {
@@ -31,20 +32,20 @@ namespace XPY.WebTemplate2.Infrastructure.Extensions
 
                 // ref: https://github.com/RSuter/NSwag/issues/869
                 config.OperationProcessors.Add(new OperationSecurityScopeProcessor("apiKey"));
-                /*config.OperationProcessors.Add(new AuthorizeOperationProcessor());
-                config.OperationProcessors.Add(new OptionParamProcessor());
                 config.OperationProcessors.Add(new StringEnumParamProcessor());
+                /*config.OperationProcessors.Add(new AuthorizeOperationProcessor());
+                config.OperationProcessors.Add(new OptionParamProcessor()); ;
                 config.OperationProcessors.Add(new FixFormFileParamProcessor());
                 config.OperationProcessors.Add(new DefaultEnumParamProcessor());
                 config.OperationProcessors.Add(new ConsumesAttributeProcessor());*/
                 config.DocumentProcessors.Add(new SecurityDefinitionAppender(
                     "apiKey",
                     new string[0],
-                    new NSwag.OpenApiSecurityScheme()
+                    new OpenApiSecurityScheme()
                     {
-                        Type = NSwag.OpenApiSecuritySchemeType.ApiKey,
+                        Type = OpenApiSecuritySchemeType.ApiKey,
                         Name = "Authorization",
-                        In = NSwag.OpenApiSecurityApiKeyLocation.Header,
+                        In = OpenApiSecurityApiKeyLocation.Header,
                         Description = "JWT(Bearer) 存取權杖"
                     }));
             });
