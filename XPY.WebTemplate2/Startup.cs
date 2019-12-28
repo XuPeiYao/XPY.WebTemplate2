@@ -13,6 +13,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using XPY.WebTemplate2.Data;
+using XPY.WebTemplate2.Infrastructure.EF;
 using XPY.WebTemplate2.Infrastructure.Extensions;
 using XPY.WebTemplate2.Services.Extensions;
 
@@ -38,6 +40,11 @@ namespace XPY.WebTemplate2
         {
             // 日誌紀錄器
             services.AddLogging();
+
+            services.AddScoped<RequestCancelInterceptor>();
+            services.AddDbContext<SampleDbContext>((sp, options) => {
+                options.AddInterceptors(sp.GetService<RequestCancelInterceptor>());
+            });
 
             // 支援DI取得HttpContext
             services.AddHttpContextAccessor();
@@ -108,6 +115,23 @@ namespace XPY.WebTemplate2
                 .AddContentTypeOptionsNoSniff()
                 .AddReferrerPolicyStrictOriginWhenCrossOrigin()
                 .RemoveServerHeader());
+
+            // 當Request中斷則取消查詢
+            app.Use(async (context, next) => {
+                var interceptor = context.RequestServices.GetService<RequestCancelInterceptor>();
+                context.RequestAborted.Register(() => {
+                    foreach (var command in interceptor.Commands)
+                    {
+                        try
+                        {
+                            command.Cancel();
+                        }
+                        catch { }
+                    }
+                });
+                await next();
+            });
+
 
             // 轉發標頭
             app.UseForwardedHeaders(new ForwardedHeadersOptions

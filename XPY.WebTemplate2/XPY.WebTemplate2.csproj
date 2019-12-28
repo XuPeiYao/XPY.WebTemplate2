@@ -11,6 +11,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\XPY.WebTemplate2.Collection\XPY.WebTemplate2.Collection.csproj" />
+    <ProjectReference Include="..\XPY.WebTemplate2.Data\XPY.WebTemplate2.Data.csproj" />
     <ProjectReference Include="..\XPY.WebTemplate2.Infrastructure\XPY.WebTemplate2.Infrastructure.csproj" />
     <ProjectReference Include="..\XPY.WebTemplate2.Services\XPY.WebTemplate2.Services.csproj" />
   </ItemGroup>
